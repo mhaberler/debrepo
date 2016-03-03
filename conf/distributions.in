@@ -1,0 +1,35 @@
+Origin: Machinekit Project
+Label: Machinekit
+Description: Machinekit packages for Wheezy
+  From Machinekit Project
+  .
+  http://www.machinekit.io
+Suite: stable
+Codename: wheezy
+Architectures: amd64 i386 armhf source
+Components: main
+SignWith: GPG_SIG
+
+Origin: Machinekit Project
+Label: Machinekit
+Description: Machinekit packages for Jessie
+  From Machinekit Project
+  .
+  http://www.machinekit.io
+Suite: stable
+Codename: jessie
+Architectures: amd64 i386 armhf source
+Components: main
+SignWith: GPG_SIG
+
+Origin: Machinekit Project
+Label: Machinekit
+Description: Machinekit packages for Raspbian Jessie
+  From Machinekit Project
+  .
+  http://www.machinekit.io
+Suite: stable
+Codename: raspbian
+Architectures: armhf
+Components: main source
+SignWith: GPG_SIG

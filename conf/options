@@ -1,0 +1,8 @@
+verbose
+basedir /home/debrepo/www/debian
+confdir /home/debrepo/conf
+dbdir   /home/debrepo/data/db
+gnupghome /home/debrepo/data/.gpg
+keepunusednewfiles
+keepunreferencedfiles
+ask-passphrase

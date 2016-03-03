@@ -1,0 +1,11 @@
+[Service]
+Type=simple
+User=debrepo
+Group=mkjail
+Restart=always
+RestartSec=10
+ExecStart=/home/debrepo/scripts/run.sh
+
+[Install]
+WantedBy=multi-user.target
+
