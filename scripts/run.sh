@@ -1,5 +1,5 @@
 #!/bin/bash -e
-set -x
+#set -x
 
 cd $HOME
 logger $0: `bash -c id ` pwd=`pwd`

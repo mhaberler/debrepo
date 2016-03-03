@@ -1,7 +1,6 @@
-#!/bin/bash
-# -e
+#!/bin/bash -e
 
-set -x
+# set -x
 
 # echo pwd=`pwd`
 . config.sh
