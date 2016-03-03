@@ -1,10 +1,18 @@
 #!/bin/bash
 
+# import debs/dsc's from a directory - will search recursively
+
 shopt -s nullglob
 
 . /home/debrepo/config.sh
 
-INDIR=/home/mk_repo/archive
+if [ "$#" -ne 1 ]; then
+    echo "run with directory name containing debs/dsc's"
+    exit 1
+fi
+
+
+INDIR=$1
 
 DISTROS='wheezy jessie raspbian'
 RROPT="-s  --confdir ${CONF_DIR}"
