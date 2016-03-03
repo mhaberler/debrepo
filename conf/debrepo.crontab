@@ -1,2 +1,2 @@
-* * * * * debrepo [ -x /home/debrepo/scripts/cleanup.sh ] && /home/debrepo/scripts/cleanup.sh
+20 3 * * * debrepo [ -x /home/debrepo/scripts/cleanup.sh ] && /home/debrepo/scripts/cleanup.sh
 
