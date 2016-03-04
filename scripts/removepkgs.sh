@@ -6,28 +6,25 @@
 
 . /home/debrepo/config.sh
 
-if [ "$#" -ne 3 ]; then
-    echo "run with directory name containing debs/dsc's to remove, a distro, and a patterm"
-    echo "example: removepkgs /foo/bar jessie 'jessie~raspbian'"
+if [ "$#" -ne 2 ]; then
+    echo "run with a distro, and a patterm"
+    echo "example: removepkgs jessie 'jessie~raspbian'"
     exit 1
 fi
 
 
-INDIR=$1
-DISTRO=$2
-PATTERN=$3
+DISTRO=$1
+PATTERN=$2
 RROPT="-s  --confdir ${CONF_DIR}"
 
 
-for deb in $(find ${INDIR} -type f -name "*${PATTERN}*.deb")
-do
-    echo reprepro ${RROPT} remove $DISTRO $deb
-done
+reprepro ${RROPT} list $DISTRO | grep -e "${PATTERN}"| \
+while IFS='' read -r line; do
 
+    fields=(`echo ${line}`)
+    basename=${fields[1]}
+    echo reprepro ${RROPT} --nokeepunreferencedfiles remove $DISTRO $basename
 
-for dsc in $(find ${INDIR} -type f -name "*${PATTERN}*.dsc")
-do
-    echo reprepro ${RROPT} removesrc $DISTRO $dsc
 done
 
 exit 0

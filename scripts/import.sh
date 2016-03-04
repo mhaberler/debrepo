@@ -25,7 +25,7 @@ do
 	# pname=`dpkg-deb -f  $deb Package`  # retrieve package name from .deb
 	# echo inlcudedeb $pname $deb
 
-	reprepro ${RROPT} includedeb $distro $deb
+	echo reprepro ${RROPT} includedeb $distro $deb
     done
 done
 
@@ -35,7 +35,7 @@ do
     for dsc in $(find ${INDIR} -type f -name "*${distro}*.dsc")
     do
 	#echo $dsc
-	reprepro ${RROPT} includedsc $distro $dsc
+	echo reprepro ${RROPT} includedsc $distro $dsc
     done
 done
 
