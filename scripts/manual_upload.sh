@@ -17,6 +17,14 @@
 # will be uploaded to the sftp server
 #
 
+if ! uuidgen >/dev/null 2>&1; then
+    echo "uuidgen not found - please apt-get install uuid-runtime"
+    exit 1
+fi
+
+IMPORT=`uuidgen`
+
+
 while [[ $# > 1 ]]
 do
     key="$1"
@@ -102,7 +110,7 @@ connect_sftp() {
     sshpass -e sftp ${SFTP_ARGS} || err=$?
 
     if [ $err -ne 0 ]; then
-        rm -f ${DIR}/{sftp_cmds,IMPORT*}
+        rm -f ${DIR}/{sftp_cmds,${IMPORT}*}
         echo Error connecting with sftp. Exit code: ${err}
         exit 1
     fi
@@ -113,35 +121,35 @@ connect_sftp
 
 rm -f ${DIR}/sftp_cmds
 # tar payload
-tar czf ${DIR}/IMPORT.1.tgz -C ${DIR} . 2>/dev/null || true
+tar czf ${DIR}/${IMPORT}.1.tgz -C ${DIR} . 2>/dev/null || true
 
-if [ ! -f ${DIR}/IMPORT.1.tgz ]; then
-    echo Error creating ${DIR}/IMPORT.1.tgz file!
+if [ ! -f ${DIR}/${IMPORT}.1.tgz ]; then
+    echo Error creating ${DIR}/${IMPORT}.1.tgz file!
     exit 1
 fi
 
 # create status file
-cat >${DIR}/IMPORT <<EOF
+cat >${DIR}/${IMPORT} <<EOF
 CMD=run_tests
 EOF
 
-cat >${DIR}/IMPORT.1 <<EOF
+cat >${DIR}/${IMPORT}.1 <<EOF
 TAG=${DIST}-xxx
 EOF
 
 # create result file
-touch ${DIR}/IMPORT_passed
-touch ${DIR}/IMPORT.1_passed
+touch ${DIR}/${IMPORT}_passed
+touch ${DIR}/${IMPORT}.1_passed
 
 cat >${DIR}/sftp_cmds <<EOF
 cd shared/incoming
-put ${DIR}/IMPORT.1.tgz
+put ${DIR}/${IMPORT}.1.tgz
 cd ../info
-put ${DIR}/IMPORT
-put ${DIR}/IMPORT_passed
+put ${DIR}/${IMPORT}
+put ${DIR}/${IMPORT}_passed
 ! sleep 2
-put ${DIR}/IMPORT.1
-put ${DIR}/IMPORT.1_passed
+put ${DIR}/${IMPORT}.1
+put ${DIR}/${IMPORT}.1_passed
 bye
 EOF
 
@@ -149,4 +157,4 @@ EOF
 connect_sftp
 
 # cleanup
-rm -f ${DIR}/{sftp_cmds,IMPORT*}
+rm -f ${DIR}/{sftp_cmds,${IMPORT}*}
