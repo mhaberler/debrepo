@@ -86,12 +86,15 @@ if [ -z "${SSHPASS}" ]; then
 fi
 
 
+TMPDIR=`mktemp -d ` && cd $TEMPDIR
+
+
 # test sftp connection
-cat >${DIR}/sftp_cmds <<EOF
+cat >${TMPDIR}/sftp_cmds <<EOF
 bye
 EOF
 
-SFTP_ARGS="-oStrictHostKeyChecking=no -oBatchMode=no -b ${DIR}/sftp_cmds"
+SFTP_ARGS="-oStrictHostKeyChecking=no -oBatchMode=no -b ${TMPDIR}/sftp_cmds"
 
 if [ ! -z "${PORT}" ]; then
     SFTP_ARGS+=" -P ${PORT}"
@@ -110,7 +113,7 @@ connect_sftp() {
     sshpass -e sftp ${SFTP_ARGS} || err=$?
 
     if [ $err -ne 0 ]; then
-        rm -f ${DIR}/{sftp_cmds,${IMPORT}*}
+        rm -f ${TMPDIR}/{sftp_cmds,${IMPORT}*}
         echo Error connecting with sftp. Exit code: ${err}
         exit 1
     fi
@@ -119,37 +122,37 @@ connect_sftp() {
 # check connection
 connect_sftp
 
-rm -f ${DIR}/sftp_cmds
+rm -f ${TMPDIR}/sftp_cmds
 # tar payload
-tar czf ${DIR}/${IMPORT}.1.tgz -C ${DIR} . 2>/dev/null || true
+tar czf ${TMPDIR}/${IMPORT}.1.tgz -C ${DIR} . 2>/dev/null || true
 
-if [ ! -f ${DIR}/${IMPORT}.1.tgz ]; then
-    echo Error creating ${DIR}/${IMPORT}.1.tgz file!
+if [ ! -f ${TMPDIR}/${IMPORT}.1.tgz ]; then
+    echo Error creating ${TMPDIR}/${IMPORT}.1.tgz file!
     exit 1
 fi
 
 # create status file
-cat >${DIR}/${IMPORT} <<EOF
+cat >${TMPDIR}/${IMPORT} <<EOF
 CMD=run_tests
 EOF
 
-cat >${DIR}/${IMPORT}.1 <<EOF
+cat >${TMPDIR}/${IMPORT}.1 <<EOF
 TAG=${DIST}-xxx
 EOF
 
 # create result file
-touch ${DIR}/${IMPORT}_passed
-touch ${DIR}/${IMPORT}.1_passed
+touch ${TMPDIR}/${IMPORT}_passed
+touch ${TMPDIR}/${IMPORT}.1_passed
 
-cat >${DIR}/sftp_cmds <<EOF
+cat >${TMPDIR}/sftp_cmds <<EOF
 cd shared/incoming
-put ${DIR}/${IMPORT}.1.tgz
+put ${TMPDIR}/${IMPORT}.1.tgz
 cd ../info
-put ${DIR}/${IMPORT}
-put ${DIR}/${IMPORT}_passed
+put ${TMPDIR}/${IMPORT}
+put ${TMPDIR}/${IMPORT}_passed
 ! sleep 2
-put ${DIR}/${IMPORT}.1
-put ${DIR}/${IMPORT}.1_passed
+put ${TMPDIR}/${IMPORT}.1
+put ${TMPDIR}/${IMPORT}.1_passed
 bye
 EOF
 
@@ -157,4 +160,4 @@ EOF
 connect_sftp
 
 # cleanup
-rm -f ${DIR}/{sftp_cmds,${IMPORT}*}
+rm -f ${TMPDIR}/{sftp_cmds,${IMPORT}*}
